@@ -1,7 +1,7 @@
 /*
-AnimaciÛn por keyframes
-La textura del skybox fue conseguida desde la p·gina https ://opengameart.org/content/elyvisions-skyboxes?page=1
-y editÈ en Gimp rotando 90 grados en sentido antihorario la imagen  sp2_up.png para poder ver continuidad.
+Animaci√≥n por keyframes
+La textura del skybox fue conseguida desde la p√°gina https ://opengameart.org/content/elyvisions-skyboxes?page=1
+y edit√© en Gimp rotando 90 grados en sentido antihorario la imagen  sp2_up.png para poder ver continuidad.
 Fuentes :
 	https ://www.khronos.org/opengl/wiki/Keyframe_Animation
 	http ://what-when-how.com/wp-content/uploads/2012/07/tmpcd0074_thumb.png
@@ -36,7 +36,7 @@ Fuentes :
 #include"Model.h"
 #include "Skybox.h"
 
-//para iluminaciÛn
+//para iluminaci√≥n
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -44,7 +44,7 @@ Fuentes :
 #include "Material.h"
 const float toRadians = 3.14159265f / 180.0f;
 
-//variables para animaciÛn
+//variables para animaci√≥n
 float movCoche;
 float movOffset;
 float rotllanta;
@@ -79,11 +79,28 @@ Model Pelota_M;
 Model Pared_M;
 Model Aro_M;
 
-// MODELOS PIR¡MIDE
-
+// MODELO Y TEXTURA PIR√ÅMIDE
+Model Piramide_M;
+Texture Piramide;
 
 // MODELOS RING
+Model Ring_M;
+Model Chairs_M;
 
+//TEXTURAS RING
+Texture Ring;
+Texture Chairs;
+
+	//MODELOS DE TIENDA
+Model Palomitas_M;
+Model Soda_M;
+Model Cartel_M;
+
+	//TEXTURAS DE TIENDA
+Texture Madera;
+Texture Palomitas;
+Texture Soda;
+Texture Cartel;
 
 // MODELOS ALTAR
 
@@ -91,16 +108,28 @@ Model Aro_M;
 // MODELOS VOLADORES DE PAPANTLA
 
 
-// MODELOS L¡MPARAS
+// MODELOS L√ÅMPARAS
 Model Lampara1_M;
 
 
 
 // MODELOS PERSONAJES
+Model STienda_M;
+Model Rakan;
+Model Rakan_PI;
+Model Teemo_M;
+Model Braum_M;
+Model Gnar_M;
+
 Model MascotaAzul_M;
 
-
-
+//TEXTURAS PERSONAJES
+Texture STienda;
+Texture CuerpoRakan;
+Texture CapaRakan;
+Texture Teemo;
+Texture Braum;
+Texture Gnar;
 
 
 
@@ -122,10 +151,10 @@ static const char* vShader = "shaders/shader_light.vert";
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
 
-//funciÛn para teclado de keyframes 
+//funci√≥n para teclado de keyframes 
 void inputKeyframes(bool* keys);
 
-//c·lculo del promedio de las normales para sombreado de Phong
+//c√°lculo del promedio de las normales para sombreado de Phong
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
 {
@@ -282,7 +311,160 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
+void CrearCuboUnitario()
+{
+	// --- Definici√≥n de un Cubo Unitario (1x1x1) ---
+	// *** NORMALES INVERTIDAS (apuntan hacia adentro) ***
+	GLfloat cuboVertices[] = {
+		// x, y, z, u, v, nx, ny, nz
+		// Cara Frontal (Normal: 0,0,-1)
+		-0.5f, -0.5f, 0.5f,	 0.0f, 0.0f,  0.0f, 0.0f, -1.0f, // 0
+		 0.5f, -0.5f, 0.5f,	 2.0f, 0.0f,  0.0f, 0.0f, -1.0f, // 1
+		 0.5f,  0.5f, 0.5f,	 2.0f, 2.0f,  0.0f, 0.0f, -1.0f, // 2
+		-0.5f,  0.5f, 0.5f,	 0.0f, 2.0f,  0.0f, 0.0f, -1.0f, // 3
 
+		// Cara Trasera (Normal: 0,0,1)
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f, // 4
+		 0.5f, -0.5f, -0.5f,  2.0f, 0.0f,  0.0f, 0.0f, 1.0f, // 5
+		 0.5f,  0.5f, -0.5f,  2.0f, 2.0f,  0.0f, 0.0f, 1.0f, // 6
+		-0.5f,  0.5f, -0.5f,  0.0f, 2.0f,  0.0f, 0.0f, 1.0f, // 7
+
+		// Cara Superior (Normal: 0,-1,0)
+		-0.5f, 0.5f,  0.5f,	 0.0f, 0.0f,  0.0f, -1.0f, 0.0f, // 8
+		 0.5f, 0.5f,  0.5f,	 4.0f, 0.0f,  0.0f, -1.0f, 0.0f, // 9
+		 0.5f, 0.5f, -0.5f,	 4.0f, 4.0f,  0.0f, -1.0f, 0.0f, // 10
+		-0.5f, 0.5f, -0.5f,	 0.0f, 4.0f,  0.0f, -1.0f, 0.0f, // 11
+
+		// Cara Inferior (Normal: 0,1,0)
+		-0.5f, -0.5f,  0.5f,	 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, // 12
+		 0.5f, -0.5f,  0.5f,	 1.0f, 0.0f,  0.0f, 1.0f, 0.0f, // 13
+		 0.5f, -0.5f, -0.5f,	 1.0f, 1.0f,  0.0f, 1.0f, 0.0f, // 14
+		-0.5f, -0.5f, -0.5f,	 0.0f, 1.0f,  0.0f, 1.0f, 0.0f, // 15
+
+		// Cara Izquierda (Normal: 1,0,0)
+		-0.5f, -0.5f, -0.5f,	 0.0f, 0.0f,  1.0f, 0.0f, 0.0f, // 16
+		-0.5f, -0.5f,  0.5f,	 8.0f, 0.0f,  1.0f, 0.0f, 0.0f, // 17
+		-0.5f,  0.5f,  0.5f,	 8.0f, 2.0f,  1.0f, 0.0f, 0.0f, // 18
+		-0.5f,  0.5f, -0.5f,	 0.0f, 2.0f,  1.0f, 0.0f, 0.0f, // 19
+
+		// Cara Derecha (Normal: -1,0,0)
+		 0.5f, -0.5f,  0.5f,	 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f, // 20
+		 0.5f, -0.5f, -0.5f,	 8.0f, 0.0f,  -1.0f, 0.0f, 0.0f, // 21
+		 0.5f,  0.5f, -0.5f,	 8.0f, 2.0f,  -1.0f, 0.0f, 0.0f, // 22
+		 0.5f,  0.5f,  0.5f,	 0.0f, 2.0f,  -1.0f, 0.0f, 0.0f  // 23
+	};
+
+	// √çndices EST√ÅNDAR (CCW)
+	unsigned int cuboIndices[] = {
+		0, 1, 2,   2, 3, 0,		// Frontal
+		4, 5, 6,   6, 7, 4,		// Trasera
+		8, 9, 10,  10, 11, 8,	// Superior
+		12, 13, 14, 14, 15, 12,	// Inferior
+		16, 17, 18, 18, 19, 16,	// Izquierda
+		20, 21, 22, 22, 23, 20	// Derecha
+	};
+
+	Mesh* cubo = new Mesh();
+	cubo->CreateMesh(cuboVertices, cuboIndices, 192, 36);
+	meshList.push_back(cubo); // Se a√±adir√° en meshList[5]
+}
+
+void CrearBaseTruncada()
+{
+	// --- Definici√≥n de una Pir√°mide MUY Truncada ---
+	// Base de 1x1 (en y=-0.5), Top de 0.9x0.9 (en y=0.5), Altura 1.0
+	// Centrado en el origen (va de -0.5 a 0.5 en Y)
+
+	// V√©rtices base (y = -0.5)
+	glm::vec3 p0 = glm::vec3(-0.5f, -0.5f, 0.5f);  // B0 (frontal-izq)
+	glm::vec3 p1 = glm::vec3(0.5f, -0.5f, 0.5f);   // B1 (frontal-der)
+	glm::vec3 p2 = glm::vec3(0.5f, -0.5f, -0.5f);  // B2 (trasera-der)
+	glm::vec3 p3 = glm::vec3(-0.5f, -0.5f, -0.5f); // B3 (trasera-izq)
+	// V√©rtices top (y = 0.5)
+	glm::vec3 p4 = glm::vec3(-0.45f, 0.5f, 0.45f); // T4 (frontal-izq)
+	glm::vec3 p5 = glm::vec3(0.45f, 0.5f, 0.45f);  // T5 (frontal-der)
+	glm::vec3 p6 = glm::vec3(0.45f, 0.5f, -0.45f); // T6 (trasera-der)
+	glm::vec3 p7 = glm::vec3(-0.45f, 0.5f, -0.45f); // T7 (trasera-izq)
+
+	// *** C√ÅLCULO DE NORMALES (Apunta Hacia Adentro) ***
+	// Se invierte el orden del cross product para voltear la normal
+	// Normal para cara frontal (p0, p1, p5, p4)
+	glm::vec3 edgeF1 = p1 - p0;
+	glm::vec3 edgeF2 = p4 - p0;
+	glm::vec3 normalFront = glm::normalize(glm::cross(edgeF2, edgeF1)); // Invertido
+
+	// Normal para cara trasera (p2, p3, p7, p6)
+	glm::vec3 edgeB1 = p3 - p2;
+	glm::vec3 edgeB2 = p6 - p2;
+	glm::vec3 normalBack = glm::normalize(glm::cross(edgeB2, edgeB1)); // Invertido
+
+	// Normal para cara izquierda (p3, p0, p4, p7)
+	glm::vec3 edgeL1 = p0 - p3;
+	glm::vec3 edgeL2 = p7 - p3;
+	glm::vec3 normalLeft = glm::normalize(glm::cross(edgeL2, edgeL1)); // Invertido
+
+	// Normal para cara derecha (p1, p2, p6, p5)
+	glm::vec3 edgeR1 = p2 - p1;
+	glm::vec3 edgeR2 = p5 - p1;
+	glm::vec3 normalRight = glm::normalize(glm::cross(edgeR2, edgeR1)); // Invertido
+
+
+	// *** V√âRTICES CON NORMALES INVERTIDAS ***
+	GLfloat frustumVertices[] = {
+		// x, y, z, u, v, nx, ny, nz
+		// Caras definidos en sentido ANTI-HORARIO (CCW) visto desde FUERA
+
+		// Cara Superior (Normal: 0,-1,0)
+		p7.x, p7.y, p7.z,  0.0f, 0.0f,  0.0f, -1.0f, 0.0f, // T7 (0)
+		p6.x, p6.y, p6.z,  4.0f, 0.0f,  0.0f, -1.0f, 0.0f, // T6 (1)
+		p5.x, p5.y, p5.z,  4.0f, 4.0f,  0.0f, -1.0f, 0.0f, // T5 (2)
+		p4.x, p4.y, p4.z,  0.0f, 4.0f,  0.0f, -1.0f, 0.0f, // T4 (3)
+
+		// Cara Inferior (Normal: 0,1,0)
+		p3.x, p3.y, p3.z,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f, // B3 (4)
+		p0.x, p0.y, p0.z,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f, // B0 (5)
+		p1.x, p1.y, p1.z,  1.0f, 1.0f,  0.0f, 1.0f, 0.0f, // B1 (6)
+		p2.x, p2.y, p2.z,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f, // B2 (7)
+
+		// Cara Frontal (Normal calculada e invertida)
+		p0.x, p0.y, p0.z,  0.0f, 0.0f,  normalFront.x, normalFront.y, normalFront.z, // B0 (8)
+		p1.x, p1.y, p1.z,  2.0f, 0.0f,  normalFront.x, normalFront.y, normalFront.z, // B1 (9)
+		p5.x, p5.y, p5.z,  2.0f, 1.0f,  normalFront.x, normalFront.y, normalFront.z, // T5 (10)
+		p4.x, p4.y, p4.z,  0.0f, 1.0f,  normalFront.x, normalFront.y, normalFront.z, // T4 (11)
+
+		// Cara Trasera (Normal calculada e invertida)
+		p2.x, p2.y, p2.z,  0.0f, 0.0f,  normalBack.x, normalBack.y, normalBack.z, // B2 (12)
+		p3.x, p3.y, p3.z,  2.0f, 0.0f,  normalBack.x, normalBack.y, normalBack.z, // B3 (13)
+		p7.x, p7.y, p7.z,  2.0f, 1.0f,  normalBack.x, normalBack.y, normalBack.z, // T7 (14)
+		p6.x, p6.y, p6.z,  0.0f, 1.0f,  normalBack.x, normalBack.y, normalBack.z, // T6 (15)
+
+		// Cara Izquierda (Normal calculada e invertida)
+		p3.x, p3.y, p3.z,  0.0f, 0.0f,  normalLeft.x, normalLeft.y, normalLeft.z, // B3 (16)
+		p0.x, p0.y, p0.z,  5.0f, 0.0f,  normalLeft.x, normalLeft.y, normalLeft.z, // B0 (17)
+		p4.x, p4.y, p4.z,  5.0f, 0.5f,  normalLeft.x, normalLeft.y, normalLeft.z, // T4 (18)
+		p7.x, p7.y, p7.z,  0.0f, 0.5f,  normalLeft.x, normalLeft.y, normalLeft.z, // T19)
+
+		// Cara Derecha (Normal calculada e invertida)
+		p1.x, p1.y, p1.z,  0.0f, 0.0f,  normalRight.x, normalRight.y, normalRight.z, // B1 (20)
+		p2.x, p2.y, p2.z,  5.0f, 0.0f,  normalRight.x, normalRight.y, normalRight.z, // B2 (21)
+		p6.x, p6.y, p6.z,  5.0f, 0.5f,  normalRight.x, normalRight.y, normalRight.z, // T6 (22)
+		p5.x, p5.y, p5.z,  0.0f, 0.5f,  normalRight.x, normalRight.y, normalRight.z  // T5 (23)
+	};
+
+	// *** √çNDICES EST√ÅNDAR (Winding order CCW - Anti-horario) ***
+	unsigned int frustumIndices[] = {
+		0, 1, 2,   2, 3, 0,		// Superior
+		4, 5, 6,   6, 7, 4,		// Inferior
+		8, 9, 10,  10, 11, 8,	// Frontal
+		12, 13, 14,  14, 15, 12,	// Trasera
+		16, 17, 18,  18, 19, 16,	// Izquierda
+		20, 21, 22,  22, 23, 20	// Derecha
+	};
+
+	Mesh* base = new Mesh();
+	base->CreateMesh(frustumVertices, frustumIndices, 192, 36);
+	meshList.push_back(base); // Se a√±adir√° en meshList[6]
+}
 ///////////////////////////////KEYFRAMES/////////////////////
 
 
@@ -295,8 +477,8 @@ float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
 float	movAvion_x = 0.0f, movAvion_y = 0.0f;
 float giroAvion = 0;
 
-#define MAX_FRAMES 100 //N˙mero de cuadros m·ximos
-int i_max_steps = 100; //N˙mero de pasos entre cuadros para interpolaciÛn, a mayor n˙mero , m·s lento ser· el movimiento
+#define MAX_FRAMES 100 //N√∫mero de cuadros m√°ximos
+int i_max_steps = 100; //N√∫mero de pasos entre cuadros para interpolaci√≥n, a mayor n√∫mero , m√°s lento ser√° el movimiento
 int i_curr_steps = 0;
 typedef struct _frame
 {
@@ -325,15 +507,15 @@ bool loadFramesFromFile(const std::string& filename = "keyframes.txt")
 	std::string line;
 	int idx = 0;
 	while (std::getline(file, line) && idx < MAX_FRAMES) {
-		// Omitir lÌneas vacÌas o comentarios
+		// Omitir l√≠neas vac√≠as o comentarios
 		if (line.empty()) continue;
 		if (line[0] == '#') continue;
 
 		std::istringstream iss(line);
 		float x, y, g;
-		// Esperamos 3 floats por lÌnea: movAvion_x movAvion_y giroAvion
+		// Esperamos 3 floats por l√≠nea: movAvion_x movAvion_y giroAvion
 		if (!(iss >> x >> y >> g)) {
-			// lÌnea malformada -> ignorar
+			// l√≠nea malformada -> ignorar
 			continue;
 		}
 
@@ -398,18 +580,18 @@ void animate(void)
 	//Movimiento del objeto con barra espaciadora
 	if (play)
 	{
-		if (i_curr_steps >= i_max_steps) //fin de animaciÛn entre frames?
+		if (i_curr_steps >= i_max_steps) //fin de animaci√≥n entre frames?
 		{
 			playIndex++;
 			printf("playindex : %d\n", playIndex);
-			if (playIndex > FrameIndex - 2)	//Fin de toda la animaciÛn con ˙ltimo frame?
+			if (playIndex > FrameIndex - 2)	//Fin de toda la animaci√≥n con √∫ltimo frame?
 			{
 				printf("Frame index= %d\n", FrameIndex);
 				printf("termino la animacion\n");
 				playIndex = 0;
 				play = false;
 			}
-			else //InterpolaciÛn del prÛximo cuadro
+			else //Interpolaci√≥n del pr√≥ximo cuadro
 			{
 
 				i_curr_steps = 0; //Resetea contador
@@ -419,7 +601,7 @@ void animate(void)
 		}
 		else
 		{
-			//Dibujar AnimaciÛn
+			//Dibujar Animaci√≥n
 			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
 			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
 			giroAvion += KeyFrame[playIndex].giroAvionInc;
@@ -439,16 +621,61 @@ int main()
 	mainWindow.Initialise();
 
 	CreateObjects();
+	CrearCuboUnitario();
+	CrearBaseTruncada();
 	CreateShaders();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
 
-
+	//TEXTURAS
 	pisoTexture = Texture("Textures/piso.png");
 	pisoTexture.LoadTextureA();
+	//TEXTURA PIRAMIDE
+	Piramide = Texture("Textures/pyramid_base_color.png");
+	Piramide.LoadTextureA();
+
+	//TEXTURAS JUEGO DE PELOTA
+	Piedra = Texture("Textures/Textura_Piedra_1.jpg");
+	Piedra.LoadTextureA();
+	ParedPiedra = Texture("Textures/Piedra.jpg");
+	ParedPiedra.LoadTextureA();
+
+	//TEXTURAS RING
+	Ring = Texture("Textures/Ring.png");
+	Ring.LoadTextureA();
+	Chairs = Texture("Textures/black.jpg");
+	Chairs.LoadTextureA();
+
+	//TEXTURAS TIENDA
+	Madera = Texture("Textures/wood.jpg");
+	Madera.LoadTextureA();
+	Palomitas = Texture("Textures/popcorn_basecolor.png");
+	Palomitas.LoadTextureA();
+	STienda = Texture("Textures/lambert2.png");
+	STienda.LoadTextureA();
+	Soda = Texture("Textures/Soda_Col.png");
+	Soda.LoadTextureA();
+	Cartel = Texture("Textures/Cartel.png");
+	Cartel.LoadTextureA();
+
+	//TEXTURAS PERSONAJES
+	CuerpoRakan = Texture("Textures/Rakan_cuerpo.png");
+	CuerpoRakan.LoadTextureA();
+	CapaRakan = Texture("Textures/Rakan_capa.png");
+	CapaRakan.LoadTextureA();
+	Teemo = Texture("Textures/Teemo.png");
+	Teemo.LoadTextureA();
+	Braum = Texture("Textures/Braum.png");	
+	Braum.LoadTextureA();	
+	Gnar = Texture("Textures/Gnar.png");	
+	Gnar.LoadTextureA();
 
 
 	// CARGA DE MODELOS
+	//MODELOS PIRAMIDE
+	Piramide_M = Model();
+	Piramide_M.LoadModel("Models/piramide.fbx");
+	//MODELOS JUEGO DE PELOTA
 	Pelota_M = Model();
 	Pelota_M.LoadModel("Models/pelota.obj");
 	Pared_M = Model();
@@ -456,9 +683,22 @@ int main()
 	Aro_M = Model();
 	Aro_M.LoadModel("Models/Aro_01.obj");
 
-	MascotaAzul_M = Model();
-	MascotaAzul_M.LoadModel("Models/MascotaAzul.obj");
-
+	//MODELOS RING
+	Ring_M = Model();
+	Ring_M.LoadModel("Models/Ring.obj");
+	Chairs_M = Model();
+	Chairs_M.LoadModel("Models/Chairs.fbx");
+	
+	//MODELOS TIENDA
+	Palomitas_M = Model();
+	Palomitas_M.LoadModel("Models/Popcorn.obj");
+	Soda_M = Model();
+	Soda_M.LoadModel("Models/Soda Cup.fbx");
+	Cartel_M = Model();
+	Cartel_M.LoadModel("Models/cartel.obj");
+	
+	
+	
 
 	// CARGA SKYBOX
 	std::vector<std::string> skyboxFaces;
@@ -477,13 +717,13 @@ int main()
 
 
 	// LUCES
-	//luz direccional, sÛlo 1 y siempre debe de existir
+	//luz direccional, s√≥lo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 0.96f, 0.71f,
 		0.5f, 0.4f,
 		0.0f, 0.0f, -1.0f);
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
-	//DeclaraciÛn de primer luz puntual
+	//Declaraci√≥n de primer luz puntual
 	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
 		1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f,
@@ -509,6 +749,42 @@ int main()
 		15.0f);
 	spotLightCount++;
 
+	//CONSTANTES
+		// Definici√≥n de Medidas de la tienda
+	float counterW = 8.0f;  // Ancho del mostrador
+	float counterH = 3.0f;  // Altura del mostrador
+	float counterD = 2.5f;  // Profundidad del mostrador
+	float postSize = 0.4f;  // Grosor de los postes
+	float postH = 6.0f;   // Altura de los postes (sobre el mostrador)
+	float roofH = 0.5f;   // Grosor del techo
+	float roofOverhang = 1.0f; // Cu√°nto sobresale el techo
+	float valanceH = 1.0f;  // Altura del fald√≥n rayado
+	
+	//Postes de Soporte
+		// Se posicionan en la parte TRASERA del mostrador
+	float postX_Offset = (counterW / 2.0f) - (postSize / 2.0f);
+	float postY_Pos = counterH + (postH / 2.0f);
+	float postZ_Pos = -(counterD / 2.0f) + (postSize / 2.0f);
+	
+	//Techo y Fald√≥n
+	float roofW = counterW;
+	float roofD = counterD + roofOverhang;
+	float roofY_Pos = counterH + postH + (roofH / 2.0f);
+	float roofZ_Pos = postZ_Pos - (roofOverhang / 2.0f) + (postSize / 2.0f);
+	
+	
+	//Props sobre el Mostrador
+	float propY_Base = counterH; // Los props se sientan sobre el mostrador
+	
+	
+	float valanceY_Pos = roofY_Pos - (roofH / 2.0f) - (valanceH / 2.0f);
+	float valanceZ_Pos = roofZ_Pos + (roofD / 2.0f); // Borde frontal del techo
+	
+	// Letrero 
+	float signW = 0.1f;
+	float signH = 0.18f;
+		
+	
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0, uniformTextureOffset = 0;
@@ -523,7 +799,7 @@ int main()
 
 	//-------------KEYFRAMES GUARDADOS---------------//
 
-	// Intentar cargar keyframes desde keyframes.txt; si falla, se usan valores por defecto que venÌan en la pr·ctica
+	// Intentar cargar keyframes desde keyframes.txt; si falla, se usan valores por defecto que ven√≠an en la pr√°ctica
 	if (!loadFramesFromFile("keyframes.txt"))
 	{
 		KeyFrame[0].movAvion_x = 0.0f;
@@ -551,7 +827,7 @@ int main()
 		KeyFrame[5].giroAvion = 0.0f;
 
 		FrameIndex = 6;
-		printf("No se encontrÛ keyframes.txt. Usados frames por defecto (6)\n");
+		printf("No se encontr√≥ keyframes.txt. Usados frames por defecto (6)\n");
 	}
 	else {
 		printf("Cargados %d frames desde keyframes.txt\n", FrameIndex);
@@ -608,7 +884,7 @@ int main()
 		uniformColor = shaderList[0].getColorLocation();
 		uniformTextureOffset = shaderList[0].getOffsetLocation();
 
-		//informaciÛn en el shader de intensidad especular y brillo
+		//informaci√≥n en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
@@ -616,12 +892,12 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-		// luz ligada a la c·mara de tipo flash
+		// luz ligada a la c√°mara de tipo flash
 		lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
-		//informaciÛn al shader de fuentes de iluminaciÛn
+		//informaci√≥n al shader de fuentes de iluminaci√≥n
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
@@ -655,23 +931,84 @@ int main()
 
 
 
-		// CANCHA DE JUEGO DE PELOTA
+	// CANCHA DE JUEGO DE PELOTA
 
-		// PARED
+		// BASES 
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 0.6f, -150.0f));
+		model = glm::scale(model, glm::vec3(40.0f, 3.0f, 140.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Piedra.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[6]->RenderMesh();
+		
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-220.0f, 0.6f, -150.0f));
+		model = glm::scale(model, glm::vec3(40.0f, 3.0f, 140.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Piedra.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[6]->RenderMesh(); 
+
+		// Prismas cuadrangulares
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 17.1f, -150.0f));
+		model = glm::scale(model, glm::vec3(30.0f, 30.0f, 120.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		ParedPiedra.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh();
+		
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-220.0f, 17.1f, -150.0f));
+		model = glm::scale(model, glm::vec3(30.0f, 30.0f, 120.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		ParedPiedra.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh(); 
+		
+		//parte de arriba
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 32.5f, -150.0f));
+		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 120.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Piedra.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh(); 
+		
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-220.0f, 32.5f, -150.0f));
+		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 120.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Piedra.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[5]->RenderMesh();
+
+		
+	/*	// PARED
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-135.0f, 26.5f, -150.5f));
 		modelaux = model;
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.05f, 0.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Pared_M.RenderModel();
-		// ARO
+		Pared_M.RenderModel(); */
+		
+		// AROS
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, 18.0f, 5.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-139.9f, 25.5f, -150.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
 		model = glm::scale(model, glm::vec3(0.35f, 0.35f, 0.25f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Aro_M.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-200.1f, 25.5f, -150.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		model = glm::rotate(model, glm::radians(180.0f), { 0.0f, 1.0f, 0.0f });
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Aro_M.RenderModel();
+		
 		// PELOTA
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(-22.0f, -28.5f, 8.0f));
@@ -680,16 +1017,146 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Pelota_M.RenderModel();
 
+		// PELOTA 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3 ( - 181.0f, 4.0f, -172.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Pelota_M.RenderModel();
 
 
 
 
-		// PIR¡MIDE
-		
+
+		// PIR√ÅMIDE
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, -0.9f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, glm::radians(180.0f), { 0.0f, 1.0f, 0.0f });
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Piramide.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Piramide_M.RenderModel();
 
 
 		// RING
+		//El Ring
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-180.0f, -0.5f, 180.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Ring_M.RenderModel();
 		
+		//Sillas
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-250.0f, -0.9f, 190.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::rotate(model, glm::radians(-90.0f), { 1.0f, 0.0f, 0.0f });
+		model = glm::rotate(model, glm::radians(90.0f), { 0.0f, 0.0f, 1.0f });
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		color = glm::vec3(0.0f, 0.0f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Chairs_M.RenderModel();
+		
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-170.0f, -0.9f, 250.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::rotate(model, glm::radians(-90.0f), { 1.0f, 0.0f, 0.0f });
+		model = glm::rotate(model, glm::radians(180.0f), { 0.0f, 0.0f, 1.0f });
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		color = glm::vec3(0.0f, 0.0f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Chairs_M.RenderModel();
+		
+		
+		//TIENDA DE BOTANAS
+		
+		//  Matriz base para toda la tienda 
+			glm::mat4 modelStallBase = glm::mat4(1.0);
+			modelStallBase = glm::translate(modelStallBase, glm::vec3(-110.0f, -0.9f, 180.0f));
+			modelStallBase = glm::scale(modelStallBase, glm::vec3(1.5f, 1.5f, 1.5f));
+			modelStallBase = glm::rotate(modelStallBase, glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
+			//Renderizar el Mostrador 
+			model = modelStallBase; // Empezar desde la base de la tienda
+			model = glm::translate(model, glm::vec3(0.0f, counterH / 2.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(counterW, counterH, counterD));
+		
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			color = glm::vec3(1.0f, 1.0f, 1.0f); // Blanco para textura
+			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		
+			Madera.UseTexture();
+			Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			meshList[5]->RenderMesh(); // Usa el Cubo Unitario
+			Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		
+			// Poste Izquierdo
+			model = modelStallBase; // Resetear a la base de la tienda
+			model = glm::translate(model, glm::vec3(-postX_Offset, postY_Pos, postZ_Pos));
+			model = glm::scale(model, glm::vec3(postSize, postH, postSize));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			meshList[5]->RenderMesh();
+		
+			// Poste Derecho
+			model = modelStallBase; // Resetear a la base de la tienda
+			model = glm::translate(model, glm::vec3(postX_Offset, postY_Pos, postZ_Pos));
+			model = glm::scale(model, glm::vec3(postSize, postH, postSize));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			meshList[5]->RenderMesh();
+			Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		
+			// Techo (Plano superior)
+			model = modelStallBase;
+			model = glm::translate(model, glm::vec3(0.0f, roofY_Pos, roofZ_Pos));
+			model = glm::scale(model, glm::vec3(roofW, roofH, roofD));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			meshList[5]->RenderMesh();
+		
+			// Fald√≥n (El que cuelga al frente)
+			model = modelStallBase;
+			model = glm::translate(model, glm::vec3(0.0f, valanceY_Pos, valanceZ_Pos));
+			model = glm::scale(model, glm::vec3(roofW, valanceH, 0.1f)); // Muy delgado
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			meshList[5]->RenderMesh();
+			// Letrero
+			model = modelStallBase;
+			model = glm::translate(model, glm::vec3(0.0f, propY_Base-16.9f, 1.4f));
+			model = glm::scale(model, glm::vec3(signW, signH, 0.1f));
+			model = glm::rotate(model, glm::radians(180.0f), { 0.0f, 1.0f, 0.0f });
+			Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			Cartel.UseTexture();
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cartel_M.RenderModel();
+		
+		
+			// Cajas de Palomitas
+			model = modelStallBase;
+			model = glm::translate(model, glm::vec3(-1.0f, propY_Base, 0.0f));
+			model = glm::scale(model, glm::vec3(0.3, 0.3,0.3));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Palomitas.UseTexture();
+			Palomitas_M.RenderModel();
+		
+			//Refrescos
+			model = modelStallBase;
+			model = glm::translate(model, glm::vec3(0.6f, propY_Base, 0.0f));
+			model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
+			model = glm::rotate(model, glm::radians(-90.0f), { 1.0f, 0.0f, 0.0f });
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Soda.UseTexture();
+			Soda_M.RenderModel();
+		
+			model = modelStallBase;
+			model = glm::translate(model, glm::vec3(-2.6f, propY_Base, 0.0f));
+			model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
+			model = glm::rotate(model, glm::radians(-90.0f), { 1.0f, 0.0f, 0.0f });
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Soda.UseTexture();
+			Soda_M.RenderModel();
 
 
 		// ALTAR
@@ -698,10 +1165,22 @@ int main()
 
 		// VOLADORES
 
+		
+		//Teemo para volador de Papantla
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(180.0f, 30.f, 180.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		model = glm::rotate(model, glm::radians(180.0f), { 0.0f, 0.0f, 1.0f });
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Teemo.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Teemo_M.RenderModel();
 
 
 
-		// L¡MPARAS
+		// L√ÅMPARAS
 		// Lampara 1
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-110.0f, -2.0f, -50.0f));
@@ -712,11 +1191,56 @@ int main()
 		modelaux = model;
 		model = glm::translate(model, glm::vec3(0.0f, 11.3f, 0.0f));
 		glm::vec3 lamparaPosition = glm::vec3(model[3]);
-		pointLights[0].SetPosP(lamparaPosition); // actualizar posiciÛn de la luz puntual
+		pointLights[0].SetPosP(lamparaPosition); // actualizar posici√≥n de la luz puntual
 
 
 		// PERSONAJES
 
+		//Rakan
+		//la pierna solo puede rotar hasta 45 grados hacia atr√°s o si no se nota demasiado el corte en el modelo
+		//pierna izquierda x=0, y=8.75346 m, z=103.16 m
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-180.0f, -0.9f, -170.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f); // Blanco para que vea la textura
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		CapaRakan.UseTexture();
+		CuerpoRakan.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Rakan.RenderModel();
+		
+		model = modelaux;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		CapaRakan.UseTexture();
+		CuerpoRakan.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Rakan_PI.RenderModel();
+
+		//Braum
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-180.0f, 10.0f, 190.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f); 
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Braum.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Braum_M.RenderModel();
+
+		//MegaGnar
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-180.0f, 10.0f, 180.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f); // Blanco para que se vea la textura
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gnar.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Gnar_M.RenderModel();
+
+		
 		// MASCOTA
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-120.0f, -2.0f, 20.0f));
@@ -749,7 +1273,7 @@ void inputKeyframes(bool* keys)
 				playIndex = 0;
 				i_curr_steps = 0;
 				reproduciranimacion++;
-				printf("\n presiona 0 para habilitar reproducir de nuevo la animaciÛn'\n");
+				printf("\n presiona 0 para habilitar reproducir de nuevo la animaci√≥n'\n");
 				habilitaranimacion = 0;
 
 			}
@@ -764,7 +1288,7 @@ void inputKeyframes(bool* keys)
 	{
 		if (habilitaranimacion < 1 && reproduciranimacion>0)
 		{
-			printf("Ya puedes reproducir de nuevo la animaciÛn con la tecla de barra espaciadora'\n");
+			printf("Ya puedes reproducir de nuevo la animaci√≥n con la tecla de barra espaciadora'\n");
 			reproduciranimacion = 0;
 
 		}
@@ -882,7 +1406,7 @@ void inputKeyframes(bool* keys)
 		}
 	}
 
-	// Movimiento rotaciÛn Z negativo (teclas R / T)
+	// Movimiento rotaci√≥n Z negativo (teclas R / T)
 	if (keys[GLFW_KEY_R])
 	{
 		if (ciclo_zrot < 1)
@@ -892,7 +1416,7 @@ void inputKeyframes(bool* keys)
 			printf("\n rotZ (grados) es: %f\n", rotZ);
 			ciclo_zrot++;
 			ciclo_zrot2 = 0;
-			printf("\n Presiona T para habilitar la modificaciÛn de rotacion Z nuevamente\n");
+			printf("\n Presiona T para habilitar la modificaci√≥n de rotacion Z nuevamente\n");
 		}
 	}
 	if (keys[GLFW_KEY_T])
@@ -906,3 +1430,4 @@ void inputKeyframes(bool* keys)
 	}
 
 }
+
