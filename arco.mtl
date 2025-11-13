@@ -1,0 +1,66 @@
+# Blender 3.6.0 MTL File: 'reja.blend'
+# www.blender.org
+
+newmtl Gate_Light:phongE5SG
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.050000 0.050000 0.050000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd lightlower_diffuse.jpg
+map_Bump lightlower_normal.jpg -bm 1
+
+newmtl Gate_Light:phongE6SG
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd lightupper_diffuse.jpg
+map_Bump lightupper_normal.jpg -bm 1
+
+newmtl Material.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd pillar_diffuse.jpg
+
+newmtl Material.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd lightupper_diffuse.jpg
+
+newmtl Pillar_Final:lambert4SG
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.120000 0.120000 0.120000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd pillar_diffuse.jpg
+map_Bump pillar_normalmap.jpg -bm 1
+
+newmtl phongE1SG
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.080000 0.080000 0.080000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd gate_diffuse.jpg
+map_Bump gate_normal.jpg -bm 1
